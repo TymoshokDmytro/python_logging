@@ -27,13 +27,15 @@ def get_log_level_from_str(log_level_str):
         return logging.DEBUG
 
 
-def get_logger(log_config_path='config.json', abs_path=False, logger_name=None):
+def get_logger(log_config_path='config.json', start_from_root_path=False, logger_name=None):
     frame = inspect.stack()[1][0]
     called_module = inspect.getmodule(frame)
     parent_folder = get_parent_folder(called_module.__file__)
-    path = os.path.join(ROOT_DIR, log_config_path) if abs_path else os.path.join(parent_folder, log_config_path)
+    path = os.path.join(ROOT_DIR, log_config_path) if start_from_root_path else os.path.join(parent_folder,
+                                                                                             log_config_path)
     if not os.path.exists(path):
-        raise FileExistsError("Logging config file not found at " + path + " | abs_path: " + str(abs_path))
+        raise FileExistsError(
+            "Logging config file not found at " + path + " | start_from_root_path: " + str(start_from_root_path))
         # return logging.getLogger()
 
     with open(path, 'rt') as file:
@@ -67,3 +69,15 @@ def get_logger(log_config_path='config.json', abs_path=False, logger_name=None):
 
                 log.addHandler(handler)
     return log
+
+
+def get_logger_handler(logger, handler_types):
+    if logger.handlers:
+        for handler in logger.handlers:
+            if type(handler) in handler_types:
+                return handler
+
+
+def write_process_pid(module_name):
+    with open(module_name + '.pid', 'wt') as pidfile:
+        pidfile.write(str(os.getpid()))
