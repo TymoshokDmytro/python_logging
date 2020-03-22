@@ -11,8 +11,7 @@
       "level": "INFO",
       "formatter": "standard",
       "class": "logging.StreamHandler"
-    },
-    "time_rotating"
+    }
   },
   "loggers": {
     "default": {
@@ -20,6 +19,13 @@
         "console"
       ],
       "level": "DEBUG",
+      "propagate": false
+    },
+    "my_logger_error": {
+      "handlers": [
+        "console"
+      ],
+      "level": "ERROR",
       "propagate": false
     }
   },
@@ -29,7 +35,7 @@
       "filename": "logs/log",
       "when": "M",
       "interval": 1,
-      "backupCount": 0,
+      "backupCount": 5,
       "encoding": "utf-8",
       "delay": true
     }
